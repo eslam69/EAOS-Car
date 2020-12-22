@@ -62,44 +62,25 @@ void loop() {
  
   int value = LOW;
   if (request.indexOf("/right") != -1)  {
+    //write motor right_dir configs here
     digitalWrite(ledPin, HIGH);
     Serial.println("go right");
     value = HIGH;
   }
   if (request.indexOf("/left") != -1)  {
+    //write motor forward_dir configs here
     digitalWrite(ledPin, LOW);
     Serial.println("go left");
     value = LOW;
   }
 
   if (request.indexOf("/forward") != -1)  {
+    //write motor forward_dir configs here
     digitalWrite(ledPin, LOW);
     Serial.println("go forward");
     value = LOW;
   }
- 
-// Set ledPin according to the request
-//digitalWrite(ledPin, value);
- 
-  // Return the response
-  client.println("HTTP/1.1 200 OK");
-  client.println("Content-Type: text/html");
-  client.println(""); //  do not forget this one
-  client.println("<!DOCTYPE HTML>");
-  client.println("<html>");
- 
-  client.print("Led pin is now: ");
- 
-  if(value == HIGH) {
-    client.print("On");
-  } else {
-    client.print("Off");
-  }
-  client.println("<br><br>");
-  client.println("<a href=\"/LED=ON\"\"><button>Turn On </button></a>");
-  client.println("<a href=\"/LED=OFF\"\"><button>Turn Off </button></a><br />");  
-  client.println("</html>");
- 
+
   delay(1);
   Serial.println("Client disonnected");
   Serial.println("");
