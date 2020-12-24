@@ -14,7 +14,7 @@ if __name__ == "__main__":
         # test_photo('data/road3.jpg')
         direction = compute_direction(frame)
         print(direction)
-        sendMessage(ESP_SERVER_IP,direction)
+        sendMessage(ESP_SERVER_IP, direction)
         test_photo(frame)
-    
+
     cv2.destroyAllWindows()
