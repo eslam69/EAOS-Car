@@ -369,17 +369,19 @@ def compute_direction(frame):
     lines = detect_lane(frame)[0]
     # print(lines.shape)
     angle = compute_steering_angle(frame, lines)
+    print(angle)
     if angle > 90:
-        return "left"
+        return "L"
     elif angle < 90:
 
-        return "right"
+        return "R"
     else:
-        return "forward"
+        return "F"
 
 
 if __name__ == "__main__":
-    capture = cv2.VideoCapture(CAMERA_IP)
+    # capture = cv2.VideoCapture(CAMERA_IP)
+    capture = cv2.VideoCapture('http://192.168.43.1:8080/video')
     while True:
         ret, frame = capture.read()
         # print(image.shape)

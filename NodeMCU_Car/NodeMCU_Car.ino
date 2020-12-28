@@ -5,27 +5,21 @@
 #define IN_3  2           // L298N in3 motors Left            GPIO2(D4)
 #define IN_4  0           // L298N in4 motors Left            GPIO0(D3)
 
-
 #include <ESP8266WiFi.h>
+#include <WiFiClient.h> 
+#include <ESP8266WebServer.h>
 
 
 String command;             //String to store app command state.
 int speedCar = 1023;         // 400 - 1023.
 int speed_Coeff = 2;
 
- 
-//const char* ssid = "Eslam";
-//const char* password = "01006497889";
+const char* ssid = "NodeMCU Car";
+ESP8266WebServer server(80);
 
-const char* ssid = "eslam";
-const char* password = "251997251997";
-
-
-WiFiServer server(80);
- 
 void setup() {
-  Serial.begin(115200);
-  delay(10);
+ Serial.begin(115200);
+ delay(10);
  
  pinMode(ENA, OUTPUT);
  pinMode(ENB, OUTPUT);  
@@ -33,32 +27,24 @@ void setup() {
  pinMode(IN_2, OUTPUT);
  pinMode(IN_3, OUTPUT);
  pinMode(IN_4, OUTPUT); 
+  
+  
+  
+// Connecting WiFi
+
+  WiFi.mode(WIFI_AP);
+  WiFi.softAP(ssid);
+
+  IPAddress myIP = WiFi.softAPIP();
+  Serial.print("AP IP address: ");
+  Serial.println(myIP);
  
-  // Connect to WiFi network
-  Serial.println();
-  Serial.println();
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
+  
  
-  WiFi.begin(ssid, password);
- 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("");
-  Serial.println("WiFi connected");
- 
-  // Start the server
-  server.begin();
-  Serial.println("Server started");
- 
-  // Print the IP address
-  Serial.print("Use this URL to connect: ");
-  Serial.print("http://");
-  Serial.print(WiFi.localIP());
-  Serial.println("/");
- 
+ // Starting WEB-server 
+     server.on ( "/", HTTP_handleRoot );
+     server.onNotFound ( HTTP_handleRoot );
+     server.begin();    
 }
 // Left
 void goLeft(){ 
@@ -159,63 +145,37 @@ void stopRobot(){
       digitalWrite(IN_4, LOW);
       analogWrite(ENB, speedCar);
  }
-void loop() {
-  // Check if a client has connected
-  WiFiClient client = server.available();
-  if (!client) {
-    return;
-  }
- 
-  // Wait until the client sends some data
-  Serial.println("new client");
-  while(!client.available()){
-    delay(1);
-  }
- 
-  // Read the first line of the request
-  String request = client.readStringUntil('\r');
-  Serial.println(request);
-  client.flush();
- 
-  // Match the request
- 
- 
-  if (request.indexOf("/r") != -1)  {
-    //write motor right_dir configs here
-    goRight();
-    
-    Serial.println("go right");
-    
-  }
-   if (request.indexOf("/l") != -1)  {
-    //write motor left_dir configs here
-    goLeft();
-    
-    Serial.println("go left");
-    
-  }
 
-   if (request.indexOf("/f") != -1)  {
-    //write motor forward_dir configs here
-    goAhead() ;
-    Serial.println("go forward");
+void loop() {
+    server.handleClient();
     
-  }
-   if (request.indexOf("/s") != -1)  {
-    //write motor forward_dir configs here
-    stopRobot() ;
-    Serial.println("stop");
-    
-  }
-   if (request.indexOf("/b") != -1)  {
-    //write motor forward_dir configs here
-    goBack() ;
-    Serial.println("go forward");
-    
-  }
-  delay(1);
-  Serial.println("Client disonnected");
-  Serial.println("");
- 
+      command = server.arg("State");
+      if (command == "F") goAhead();
+      else if (command == "B") goBack();
+      else if (command == "L") goLeft();
+      else if (command == "R") goRight();
+      else if (command == "I") goAheadRight();
+      else if (command == "G") goAheadLeft();
+      else if (command == "J") goBackRight();
+      else if (command == "H") goBackLeft();
+      else if (command == "0") speedCar = 400;
+      else if (command == "1") speedCar = 470;
+      else if (command == "2") speedCar = 540;
+      else if (command == "3") speedCar = 610;
+      else if (command == "4") speedCar = 680;
+      else if (command == "5") speedCar = 750;
+      else if (command == "6") speedCar = 820;
+      else if (command == "7") speedCar = 890;
+      else if (command == "8") speedCar = 960;
+      else if (command == "9") speedCar = 1023;
+      else if (command == "S") stopRobot();
 }
- 
+
+void HTTP_handleRoot(void) {
+
+if( server.hasArg("State") ){
+       Serial.println(server.arg("State"));
+  }
+  server.send ( 200, "text/html", "" );
+  delay(1);
+}
