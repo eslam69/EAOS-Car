@@ -69,12 +69,12 @@ def detect_edges(frame):
     # filter for blue lane lines
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     show_image("hsv", hsv)
-    # lower_blue = np.array([30, 40, 0])
-    # upper_blue = np.array([150, 255, 255])
-    # mask = cv2.inRange(hsv, lower_blue, upper_blue)
-    lower_black = np.array([0, 0, 0])
-    upper_black = np.array([179, 255, 30])
-    mask = cv2.inRange(hsv, lower_black, upper_black)
+    lower_blue = np.array([30, 40, 0])
+    upper_blue = np.array([150, 255, 255])
+    mask = cv2.inRange(hsv, lower_blue, upper_blue)
+    # lower_black = np.array([0, 0, 0])
+    # upper_black = np.array([179, 255, 30])
+    # mask = cv2.inRange(hsv, lower_black, upper_black)
     show_image("blue mask", mask)
 
     # detect edges
@@ -327,8 +327,8 @@ def test_photo(file):
     combo_image = land_follower.follow_lane(frame)
     show_image('final', combo_image, True)
     # cv2.waitKey(0)
-    # # cv2.destroyAllWindows()
-    # cv2.imwrite("data/out3.jpg", combo_image)
+    # cv2.destroyAllWindows()
+    # cv2.imwrite("output.jpg", combo_image)
 
 
 def test_video(video_file):
@@ -367,13 +367,13 @@ def test_video(video_file):
 
 def compute_direction(frame):
     lines = detect_lane(frame)[0]
+    cv2.imwrite('outputttt.jpg',display_lines(frame, lines))
     # print(lines.shape)
     angle = compute_steering_angle(frame, lines)
     print(angle)
     if angle > 90:
         return "L"
     elif angle < 90:
-
         return "R"
     else:
         return "F"
