@@ -14,8 +14,12 @@ String command;             //String to store app command state.
 int speedCar = 1023;         // 400 - 1023.
 int speed_Coeff = 2;
 
-const char* ssid = "NodeMCU Car";
+
+const char* ssid = "Eslam";
+const char* password = "01006497889";
 ESP8266WebServer server(80);
+void HTTP_handleRoot(void) ;
+
 
 void setup() {
  Serial.begin(115200);
@@ -32,13 +36,19 @@ void setup() {
   
 // Connecting WiFi
 
-  WiFi.mode(WIFI_AP);
-  WiFi.softAP(ssid);
-
-  IPAddress myIP = WiFi.softAPIP();
-  Serial.print("AP IP address: ");
-  Serial.println(myIP);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("");
+  Serial.println("WiFi connected");
  
+ // Print the IP address
+  Serial.print("Use this URL to connect: ");
+  Serial.print("http://");
+  Serial.print(WiFi.localIP());
+  Serial.println("/");
   
  
  // Starting WEB-server 
@@ -56,6 +66,7 @@ void goLeft(){
       digitalWrite(IN_3, LOW);
       digitalWrite(IN_4, HIGH);
       analogWrite(ENB, speedCar);
+       Serial.println("     left done") ;
   }
 //right
 void goRight(){ 
@@ -67,6 +78,8 @@ void goRight(){
       digitalWrite(IN_3, HIGH);
       digitalWrite(IN_4, LOW);
       analogWrite(ENB, speedCar);
+             Serial.println("     Right done") ;
+
   }
 //back
 void goBack(){ 
@@ -78,6 +91,8 @@ void goBack(){
       digitalWrite(IN_3, LOW);
       digitalWrite(IN_4, HIGH);
       analogWrite(ENB, speedCar);
+             Serial.println("     back done") ;
+
   }
 //f
 void goAhead(){
@@ -89,6 +104,8 @@ void goAhead(){
       digitalWrite(IN_3, HIGH);
       digitalWrite(IN_4, LOW);
       analogWrite(ENB, speedCar);
+             Serial.println("     Forward done") ;
+
   }
 
 void goAheadRight(){
@@ -144,6 +161,8 @@ void stopRobot(){
       digitalWrite(IN_3, LOW);
       digitalWrite(IN_4, LOW);
       analogWrite(ENB, speedCar);
+             Serial.println("-----------------STOP done----------------") ;
+
  }
 
 void loop() {

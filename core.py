@@ -1,10 +1,12 @@
 import cv2
 import numpy as np
 import math
+import urllib.request
 import sys
 
 _SHOW_IMAGE = False
-CAMERA_IP = 'http://192.168.1.6:8080/video'
+# CAMERA_IP = 'http://192.168.1.7:8080/video'
+CAMERA_IP = 'http://192.168.1.7:8080/shot.jpg'
 
 
 class HandCodedLaneFollower(object):
@@ -16,7 +18,7 @@ class HandCodedLaneFollower(object):
 
     def follow_lane(self, frame):
         # Main entry point of the lane follower
-        show_image("orig", frame)
+        # show_image("orig", frame)
 
         lane_lines, frame = detect_lane(frame)
         final_frame = self.steer(frame, lane_lines)
@@ -52,11 +54,11 @@ def detect_lane(frame):
     show_image('edges', edges)
 
     cropped_edges = region_of_interest(edges)
-    show_image('edges cropped', cropped_edges)
+    show_image('edges cropped', cropped_edges,show=True)
 
     line_segments = detect_line_segments(cropped_edges)
     line_segment_image = display_lines(frame, line_segments)
-    show_image("line segments", line_segment_image)
+    show_image("line segments", line_segment_image,show=True)
 
     lane_lines = average_slope_intercept(frame, line_segments)
     lane_lines_image = display_lines(frame, lane_lines)
@@ -69,16 +71,16 @@ def detect_edges(frame):
     # filter for blue lane lines
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     show_image("hsv", hsv)
-    lower_blue = np.array([30, 40, 0])
-    upper_blue = np.array([150, 255, 255])
-    mask = cv2.inRange(hsv, lower_blue, upper_blue)
-    # lower_black = np.array([0, 0, 0])
-    # upper_black = np.array([179, 255, 30])
-    # mask = cv2.inRange(hsv, lower_black, upper_black)
+    # lower_blue = np.array([30, 40, 0])
+    # upper_blue = np.array([150, 255, 255])
+    # mask = cv2.inRange(hsv, lower_blue, upper_blue)
+    lower_black = np.array([0, 0, 0])
+    upper_black = np.array([179, 255, 30])
+    mask = cv2.inRange(hsv, lower_black, upper_black)
     show_image("blue mask", mask)
 
     # detect edges
-    edges = cv2.Canny(mask, 200, 400)
+    edges = cv2.Canny(mask, 100, 400)
 
     return edges
 
@@ -100,7 +102,7 @@ def detect_edges_old(frame):
        # show_image("blue mask hue=%s" % (16* i), mask)
 
         # detect edges
-    edges = cv2.Canny(mask, 200, 400)
+    edges = cv2.Canny(mask, 100, 400)
 
     return edges
 
@@ -370,25 +372,50 @@ def compute_direction(frame):
     cv2.imwrite('outputttt.jpg',display_lines(frame, lines))
     # print(lines.shape)
     angle = compute_steering_angle(frame, lines)
-    print(angle)
-    if angle > 90:
+    # print(angle)
+    print("######################")
+    print("number of lanes:  ",len(lines),"  Angle: ",angle)
+    print("######################")
+
+    if 110<=angle < 180:
         return "L"
-    elif angle < 90:
+    elif 0<angle <= 80:
         return "R"
-    else:
+    elif (80<angle < 110) and (len(lines)==2):
         return "F"
+    else:
+        return "S"
 
 
 if __name__ == "__main__":
     # capture = cv2.VideoCapture(CAMERA_IP)
-    capture = cv2.VideoCapture('http://192.168.43.1:8080/video')
+    # capture = cv2.VideoCapture('http://192.168.43.1:8080/video')
     while True:
-        ret, frame = capture.read()
-        # print(image.shape)
-        # cv2.imshow("Test", image)
+        imgResp = urllib.request.urlopen('http://192.168.1.7:8080/shot.jpg')
+        
+        # Numpy to convert into a array
+        imgNp = np.array(bytearray(imgResp.read()),dtype=np.uint8)
+        
+        # Finally decode the array to OpenCV usable format ;) 
+        frame = cv2.imdecode(imgNp,-1)
+        
+        
+        # put the image on screen
+        # cv2.imshow('IPWebcam',frame)
+        compute_direction(frame)
+        test_photo(frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+        # cv2.destroyAllWindows()
+    # cv2.imshow("Test", frame)
+    # while True:
+    #     ret, frame = capture.read()
+    #     # print(image.shape)
+    #     cv2.imshow("Test", frame)
+    #     if cv2.waitKey(1) & 0xFF == ord('q'):
+    #         break
 
         # test_photo('data/road3.jpg')
-        test_photo(frame)
-    cv2.destroyAllWindows()
+        # compute_direction(frame)
+        # test_photo(frame)
+    # cv2.destroyAllWindows()
