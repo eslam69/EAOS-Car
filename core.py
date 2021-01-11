@@ -54,11 +54,11 @@ def detect_lane(frame):
     show_image('edges', edges)
 
     cropped_edges = region_of_interest(edges)
-    show_image('edges cropped', cropped_edges,show=True)
+    show_image('ROI', cropped_edges,show=True)
 
     line_segments = detect_line_segments(cropped_edges)
     line_segment_image = display_lines(frame, line_segments)
-    show_image("line segments", line_segment_image,show=True)
+    show_image("line segments", line_segment_image,show=False)
 
     lane_lines = average_slope_intercept(frame, line_segments)
     lane_lines_image = display_lines(frame, lane_lines)
@@ -71,13 +71,13 @@ def detect_edges(frame):
     # filter for blue lane lines
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     show_image("hsv", hsv)
-    # lower_blue = np.array([30, 40, 0])
-    # upper_blue = np.array([150, 255, 255])
-    # mask = cv2.inRange(hsv, lower_blue, upper_blue)
-    lower_black = np.array([0, 0, 0])
-    upper_black = np.array([179, 255, 30])
-    mask = cv2.inRange(hsv, lower_black, upper_black)
-    show_image("blue mask", mask)
+    lower_blue = np.array([30, 40, 0])
+    upper_blue = np.array([150, 255, 255])
+    mask = cv2.inRange(hsv, lower_blue, upper_blue)
+    # lower_black = np.array([0, 0, 0])
+    # upper_black = np.array([179, 255, 30])
+    # mask = cv2.inRange(hsv, lower_black, upper_black)
+    show_image("binary frame", mask,show=True)
 
     # detect edges
     edges = cv2.Canny(mask, 100, 400)
@@ -327,7 +327,7 @@ def test_photo(file):
         frame = file
 
     combo_image = land_follower.follow_lane(frame)
-    show_image('final', combo_image, True)
+    show_image('steering + lanes', combo_image, True)
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()
     # cv2.imwrite("output.jpg", combo_image)
@@ -391,7 +391,7 @@ if __name__ == "__main__":
     # capture = cv2.VideoCapture(CAMERA_IP)
     # capture = cv2.VideoCapture('http://192.168.43.1:8080/video')
     while True:
-        imgResp = urllib.request.urlopen('http://192.168.1.7:8080/shot.jpg')
+        imgResp = urllib.request.urlopen('http://192.168.1.10:8080/shot.jpg')
         
         # Numpy to convert into a array
         imgNp = np.array(bytearray(imgResp.read()),dtype=np.uint8)
