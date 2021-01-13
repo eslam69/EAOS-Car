@@ -389,7 +389,6 @@ def compute_direction(frame):
 
 if __name__ == "__main__":
     # capture = cv2.VideoCapture(CAMERA_IP)
-    # capture = cv2.VideoCapture('http://192.168.43.1:8080/video')
     while True:
         imgResp = urllib.request.urlopen('http://192.168.1.4:8080/shot.jpg')
         
@@ -406,16 +405,4 @@ if __name__ == "__main__":
         test_photo(frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-        # cv2.destroyAllWindows()
-    # cv2.imshow("Test", frame)
-    # while True:
-    #     ret, frame = capture.read()
-    #     # print(image.shape)
-    #     cv2.imshow("Test", frame)
-    #     if cv2.waitKey(1) & 0xFF == ord('q'):
-    #         break
-
-        # test_photo('data/road3.jpg')
-        # compute_direction(frame)
-        # test_photo(frame)
-    # cv2.destroyAllWindows()
+       

@@ -10,7 +10,7 @@ ESP_SERVER_IP = "http://192.168.1.6/"  # Eslam Home
 
 if __name__ == "__main__":
 
-    # time.sleep(2)
+    time.sleep(2)
     # print("Connected to camera")
     sleepTime = {"F": 0.3, "R": 0.05, "L": 0.05, "S": 0.1}
     while True:
@@ -29,7 +29,7 @@ if __name__ == "__main__":
         sendMessage(ESP_SERVER_IP, direction)
         time.sleep(sleepTime.get(direction,1))
         sendMessage(ESP_SERVER_IP, "S")
-        time.sleep(0.7)
+        time.sleep(0.2)
 
 # ---------------------------------------------------------------------------- #
         if cv2.waitKey(1) & 0xFF == ord('q'):
