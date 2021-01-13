@@ -59,18 +59,7 @@ void setup() {
 // Left
 void goLeft(){ 
 
-      digitalWrite(IN_1, LOW);
-      digitalWrite(IN_2, HIGH);
-      analogWrite(ENA, speedCar);
-
-      digitalWrite(IN_3, LOW);
-      digitalWrite(IN_4, HIGH);
-      analogWrite(ENB, speedCar);
-       Serial.println("     left done") ;
-  }
-//right
-void goRight(){ 
-
+     
       digitalWrite(IN_1, HIGH);
       digitalWrite(IN_2, LOW);
       analogWrite(ENA, speedCar);
@@ -78,7 +67,21 @@ void goRight(){
       digitalWrite(IN_3, HIGH);
       digitalWrite(IN_4, LOW);
       analogWrite(ENB, speedCar);
-             Serial.println("     Right done") ;
+             Serial.println("    left done") ;
+  }
+//right
+void goRight(){ 
+
+
+   digitalWrite(IN_1, LOW);
+      digitalWrite(IN_2, HIGH);
+      analogWrite(ENA, speedCar);
+
+      digitalWrite(IN_3, LOW);
+      digitalWrite(IN_4, HIGH);
+      analogWrite(ENB, speedCar);
+       Serial.println("     Right done") ;
+
 
   }
 //back

@@ -378,10 +378,10 @@ def compute_direction(frame):
     print("######################")
 
     if 110<=angle < 180:
-        return "L"
-    elif 0<angle <= 80:
         return "R"
-    elif (80<angle < 110) and (len(lines)==2):
+    elif 0<angle <= 80:
+        return "L"
+    elif (80<angle < 110) :
         return "F"
     else:
         return "S"
@@ -391,7 +391,7 @@ if __name__ == "__main__":
     # capture = cv2.VideoCapture(CAMERA_IP)
     # capture = cv2.VideoCapture('http://192.168.43.1:8080/video')
     while True:
-        imgResp = urllib.request.urlopen('http://192.168.1.10:8080/shot.jpg')
+        imgResp = urllib.request.urlopen('http://192.168.1.4:8080/shot.jpg')
         
         # Numpy to convert into a array
         imgNp = np.array(bytearray(imgResp.read()),dtype=np.uint8)
